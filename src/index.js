@@ -13,21 +13,14 @@ watch(syncOutDir, {recursive: false}, (evt, name)=>{
     console.log("name", name);
     const stats = fs.statSync(name);
     const fileSizeInBytes = stats.size;
-    const readStream = fs.createReadStream(name);
+    const file = fs.readFileSync(name);
     
-    console.log("stats", stats)
-    fetch('http://httpbin.org/post', {
-        method: 'POST',
-        headers: {
-            "Content-length": fileSizeInBytes
-        },
-        body: readStream // Here, stringContent or bufferContent would also work
-    })
-    .then(function(res) {
-        return res.json();
-    }).then(function(json) {
-        console.log(json);
-    });
+    const form = new FormData();
+    form.append('file', file);
+    
+    const response = await fetch('https://httpbin.org/post',{method: 'POST', body: form})
+    const json = await response.json();
+    console.log('json', json)
 });
 
 
