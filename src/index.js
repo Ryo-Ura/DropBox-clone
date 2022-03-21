@@ -11,9 +11,7 @@ const app = express()
 const syncOutDir = process.env.SYNC_OUT_DIR;
 watch(syncOutDir, {recursive: false}, async(evt, name)=>{
     console.log("name", name);
-    const stats = fs.statSync(name);
-    const fileSizeInBytes = stats.size;
-    const file = fs.readFileSync(name);
+    const file = fs.createReadStream(name);
     
     const form = new FormData();
     form.append('file', file);
