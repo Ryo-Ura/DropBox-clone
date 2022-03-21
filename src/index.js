@@ -26,11 +26,11 @@ watch(syncOutDir, {recursive: false}, async(evt, name)=>{
 app.post('/files', upload.single("file"), function (req, res, next) {
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
-  // const {originalname, path} = req.file;
-  // const file = fs.readFileSync(path);
-  // fs.writeFileSync(nodePath.json(SYNC_OUT_DIR, originalname), file);
-  // fs.unlinkSync(path);
-  // res.status(200);
-  // res.send("success");
+  const {originalname, path} = req.file;
+  const file = fs.readFileSync(path);
+  fs.writeFileSync(nodePath.json(SYNC_OUT_DIR, originalname), file);
+  fs.unlinkSync(path);
+  res.status(200);
+  res.send("success");
 });
 app.listen(3333);
