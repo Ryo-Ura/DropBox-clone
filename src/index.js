@@ -18,14 +18,20 @@ watch(syncOutDir, {recursive: false}, (evt, name)=>{
     const form = new FormData();
     form.append('file', file);
     
-    const response = await fetch('https://httpbin.org/post',{method: 'POST', body: form})
+    const response = await fetch('https://localhost:6666/files',{method: 'POST', body: form})
     const json = await response.json();
     console.log('json', json)
 });
 
 
 
-app.post('/files', upload.single('avatar'), function (req, res, next) {
+app.post('/files', upload.single("file"), function (req, res, next) {
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
+  const {originalname, path} = req.file;
+  const file = fs.readFileSync(path);
+  fs.writeFileSync(nodePath.json(SYNC_OUT_DIR, originalname), file);
+  fs.unlinkSync(path);
+  res.status(200);
+  res.send("success");
 })
