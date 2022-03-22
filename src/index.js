@@ -6,30 +6,31 @@ const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const FormData = require('form-data')
 const fs = require('fs');
+const nodePath = require('path');
 const app = express()
 
-const syncOutDir = process.env.SYNC_OUT_DIR;
-watch(syncOutDir, {recursive: false}, async(evt, name)=>{
-    console.log("name", name);
+const SYNC_OUT_DIR = process.env.SYNC_OUT_DIR;
+const SYNC_IN_DIR = process.env.SYNC_IN_DIR;
+watch(SYNC_OUT_DIR, {recursive: false}, async(evt, name)=>{
+    console.log("updated: ", name);
     const file = fs.createReadStream(name);
     
     const form = new FormData();
     form.append('file', file);
     
-    const response = await fetch('http://localhost:3333/files',{method: 'POST', body: form})
-    const json = await response.json();
-    console.log('json', json)
+    const response = await fetch(`${precess.env.REMOTE_URL}files`,{
+      method: 'POST', 
+      body: form,
+    });
+    fs.unlinkSync(name);
 });
 
 
 app.post('/files', upload.single("file"), function (req, res, next) {
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-  const {originalname, path} = req.file;
   const file = fs.readFileSync(path);
-  fs.writeFileSync(nodePath.json(SYNC_OUT_DIR, originalname), file);
+  fs.writeFileSync(nodePath.join(SYNC_IN_DIR, originalname), file);
   fs.unlinkSync(path);
   res.status(200);
   res.send("success");
 });
-app.listen(3333);
+app.listen(process.env.PORT);
