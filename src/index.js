@@ -12,7 +12,7 @@ const app = express()
 const SYNC_OUT_DIR = process.env.SYNC_OUT_DIR;
 const SYNC_IN_DIR = process.env.SYNC_IN_DIR;
 watch(SYNC_OUT_DIR, {recursive: false}, async(evt, name)=>{
-    console.log("updated: ", name);
+    // console.log("updated: ", name);
     const file = fs.createReadStream(name);
     
     const form = new FormData();

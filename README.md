@@ -1,2 +1,2 @@
 # DropBox-clone
-this project tries to sync a file on 2 pc 
+the file dropped in "in" directly will be copied to "out" folder.
